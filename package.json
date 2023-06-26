@@ -1,0 +1,20 @@
+{
+  "name": "pizza-order-prototype-javascript-norcore",
+  "version": "1.0.0",
+  "description": "No starter code is provided. Start from scratch!",
+  "main": "../backend/server.js",
+  "scripts": {
+    "devStart": "nodemon"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.20.2",
+    "cors": "^2.8.5",
+    "express": "^4.18.2"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.22"
+  }
+}
