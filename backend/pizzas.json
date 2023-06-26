@@ -109,6 +109,46 @@
                 3,
                 9
             ]
+        },
+        {
+            "id": 8,
+            "name": "Mozzarella",
+            "ingredients": [
+                "Mozarella"
+            ],
+            "price": 2000,
+            "allergens": [
+                1,
+                3,
+                9
+            ]
+        },
+        {
+            "id": 9,
+            "name": "Gorgonzola",
+            "ingredients": [
+                "Gorgonzola"
+            ],
+            "price": 2000,
+            "allergens": [
+                1,
+                3,
+                9
+            ]
+        },
+        {
+            "id": 10,
+            "name": "Emmental",
+            "ingredients": [
+                "Emmental"
+            ],
+            "price": 2000,
+            "allergens": [
+                1,
+                3,
+                9
+            ]
         }
+
     ]
 }
