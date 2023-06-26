@@ -1,0 +1,118 @@
+{
+    "pizzas": [
+        {
+            "id": 1,
+            "name": "Marinara",
+            "ingredients": [
+                "San Marzano tomato sauce",
+                "Garlic",
+                "Oregano",
+                "Olive oil"
+            ],
+            "price": 3200,
+            "allergens": [
+                1,
+                3,
+                9
+            ]
+        },
+        {
+            "id": 2,
+            "name": "Calzone",
+            "ingredients": [
+                "Tomato",
+                "Ricotta",
+                "Mozarella",
+                "Ham"
+            ],
+            "price": 4190,
+            "allergens": [
+                1,
+                3,
+                4
+            ]
+        },
+        {
+            "id": 3,
+            "name": "Golfo",
+            "ingredients": [
+                "Tomato",
+                "Mozarella",
+                "Seafood"
+            ],
+            "price": 3900,
+            "allergens": [
+                1,
+                3,
+                9
+            ]
+        },
+        {
+            "id": 4,
+            "name": "Posillipo",
+            "ingredients": [
+                "Mozarella",
+                "Bufallo mozarella",
+                "Prosciutto ham"
+            ],
+            "price": 4000,
+            "allergens": [
+                1,
+                3,
+                9
+            ]
+        },
+        {
+            "id": 5,
+            "name": "Italia",
+            "ingredients": [
+                "Tomato",
+                "Mozarella",
+                "Prosciutto ham",
+                "Parmesan",
+                "Aurugula"
+            ],
+            "price": 3700,
+            "allergens": [
+                1,
+                3,
+                9
+            ]
+        },
+        {
+            "id": 6,
+            "name": "Riberella",
+            "ingredients": [
+                "Tomato",
+                "Mozarella",
+                "Pepperoni"
+            ],
+            "price": 4000,
+            "allergens": [
+                1,
+                3,
+                9
+            ]
+        },
+        {
+            "id": 7,
+            "name": "Quatro formaggi",
+            "ingredients": [
+                "Mozarella",
+                "Gorgonzola",
+                "Parmesan",
+                "Emmental"
+            ],
+            "price": 3200,
+            "allergens": [
+                1,
+                3,
+                9
+            ]
+        }
+    ]
+
+    "allergens":[
+        
+    ]
+}
