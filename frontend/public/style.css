@@ -1,0 +1,86 @@
+ #root {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#title {
+    color: #ffffff;
+    font-size: 20px;
+    text-align: center;
+    font-family: Georgia, 'Times New Roman', Times, serif;
+    font-weight: bold;
+}
+
+#order-button {
+    background-color: #808080;
+    margin: 3px;
+    padding: 15px 20px;
+    border: none;
+    border-radius: 5px;
+    font-size: 20px;
+    color: #fff;
+}
+
+#submit-button {
+    background-color: #808080;
+    margin: 3px;
+    padding: 15px 20px;
+    border: none;
+    border-radius: 5px;
+    font-size: 20px;
+    color: #fff;
+}
+
+/* #allerg-input {
+
+} */
+
+#pizza-object {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/*
+
+.input {
+    position: relative;
+    width: 200px;
+    margin: 15px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+#pkgs-select {
+    position: absolute;
+    top: 400px;
+    left: 265px;
+    width: 250px;
+    height: 40px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+.button {
+    background-color: #808080;
+    margin: 15px;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    color: #fff;
+}
+
+#pkgs-option{
+    width: 200px;
+    margin: 15px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+} */

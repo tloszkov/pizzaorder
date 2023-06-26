@@ -30,6 +30,7 @@ const loadAllergen = async function () {
 }
 loadAllergen();
 
+
 app.get('/api/pizza', (req, res) => {
     res.json(pizza.pizzas);
 });
@@ -38,5 +39,12 @@ app.get('/api/allergen', (req, res) => {
     res.json(allergen.allergens);
 });
 
-
 app.listen(port, _ => console.log(`http://127.0.0.1:${port}`));
+
+app.get("/", (req, res) => {
+    res.redirect(301, '/pizza/list');
+  });
+  app.get(["/pizza/list"], (req, res, next) => {
+    res.sendFile(path.join(`${__dirname}/../frontend/index.html`));
+  });
+  app.use('/public', express.static(`${__dirname}/../frontend/public`));
