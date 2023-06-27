@@ -134,37 +134,54 @@ async function allergenOptions() {
 }
 
 // Default siplay of all the pizzas
-async function defaultDisplayPizza() {
+/* async function defaultDisplayPizza() {
     const pizzas = await readApi();
     let listItem = "";
-    let orderButton = createButton("order-button", "Order");
     let amountInput = createInput("amount-input", "Amount")
 
 
     pizzas.map((pizza) => {
-        let pizzaInput = `<li id="${pizza.id}">${pizza.name} - ${pizza.price} ${orderButton} ${amountInput}</li>`;
+        let orderButton = createButton(`order-button:${pizza.id}`, "Order");
+        let pizzaInput = `<li id="${pizza.id}">${pizza.name} - ${pizza.price}<br> ${orderButton} <br>${amountInput}</li>`;
         listItem += pizzaInput;
     });
 
     return `<div id="default-pizza-list"><ul id="pizza-object">
     ${listItem}
     </ul></div>`;
+} */
+
+async function defaultDisplayPizza() {
+    const pizzas = await readApi();
+    let listItem = "";
+    let amountInput = createInput("amount-input", "Amount")
+
+
+    pizzas.map((pizza) => {
+        let orderButton = createButton(`order-button:${pizza.id}`, "Order");
+        let pizzaInput = `<div id="${pizza.id}" class="default-pizza-items">${pizza.name}<br>${pizza.price}<br>${orderButton}<br>${amountInput}</div>`;
+        listItem += pizzaInput;
+    });
+
+    return `<div id="default-pizza-list">
+    ${listItem}
+    </div>`;
 }
 
 // Display of filteres list pizzas
 function displayFilteredPizza(dataSet) {
     let listItem = "";
-    let orderButton = createButton("order-button", "Order");
     let amountInput = createInput("amount-input", "amount");
-
+    
     dataSet.map((pizza) => {
-        let pizzaInput = `<li id="${pizza.id}">${pizza.name} - ${pizza.price} ${orderButton} ${amountInput}</li>`;
+        let orderButton = createButton(`order-button:${pizza.id}`, "Order");
+        let pizzaInput = `<div id="${pizza.id}" class="filtered-pizza-items">${pizza.name}<br>${pizza.price}<br>${orderButton}<br>${amountInput}</div>`;
         listItem += pizzaInput;
     });
 
-    return `<div id="filtered-pizzalist"><ul id="pizza-object">
+    return `<div id="filtered-pizza-list">
     ${listItem}
-    </ul></div>`;
+    </div>`;
 }
 
 
