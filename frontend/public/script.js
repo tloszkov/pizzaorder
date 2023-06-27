@@ -21,14 +21,14 @@ const rootElement = document.getElementById("root");
 const orderObject = {
     "id": 1,
     "pizzas": [
-        { "id": 1, "amount": 2 }
+
     ],
     "customer": {
-        "name": "John Doe",
-        "email": "jd@example.com",
+        "name": "",
+        "email": "",
         "address": {
-            "city": "Palermo",
-            "street": "Via Appia 6"
+            "city": "",
+            "street": ""
         }
     }
 }
@@ -71,7 +71,7 @@ function customFetch(url, type, data) {
                 }
                 return res.json()
             })
-                /* .then((data) => data.status === "OK") */
+            /* .then((data) => data.status === "OK") */
             .catch((error) => console.log(error))
     }
     if (type === "DELETE") {
@@ -101,6 +101,10 @@ function createHeader(id, text) {
 
 function createTitle(id, title) {
     return `<h1 id="${id}">${title}</h1>`;
+}
+
+function createOrderButton(id, text) {
+    return `<button id="${id}" class="order-button">${text}</button>`;
 }
 
 function createButton(id, text) {
@@ -134,33 +138,17 @@ async function allergenOptions() {
 }
 
 // Default siplay of all the pizzas
-/* async function defaultDisplayPizza() {
-    const pizzas = await readApi();
-    let listItem = "";
-    let amountInput = createInput("amount-input", "Amount")
-
-
-    pizzas.map((pizza) => {
-        let orderButton = createButton(`order-button:${pizza.id}`, "Order");
-        let pizzaInput = `<li id="${pizza.id}">${pizza.name} - ${pizza.price}<br> ${orderButton} <br>${amountInput}</li>`;
-        listItem += pizzaInput;
-    });
-
-    return `<div id="default-pizza-list"><ul id="pizza-object">
-    ${listItem}
-    </ul></div>`;
-} */
-
 async function defaultDisplayPizza() {
     const pizzas = await readApi();
     let listItem = "";
-    let amountInput = createInput("amount-input", "Amount")
-
 
     pizzas.map((pizza) => {
-        let orderButton = createButton(`order-button:${pizza.id}`, "Order");
+        let amountInput = createInput(`amount-input:${pizza.id}`, "Amount");
+        let orderButton = createOrderButton(`order-button:${pizza.id}`, "Order");
+
         let pizzaInput = `<div id="${pizza.id}" class="default-pizza-items">${pizza.name}<br>${pizza.price}<br>${orderButton}<br>${amountInput}</div>`;
         listItem += pizzaInput;
+
     });
 
     return `<div id="default-pizza-list">
@@ -168,13 +156,14 @@ async function defaultDisplayPizza() {
     </div>`;
 }
 
-// Display of filteres list pizzas
+// Display all filtered pizzas
 function displayFilteredPizza(dataSet) {
     let listItem = "";
-    let amountInput = createInput("amount-input", "amount");
-    
+
     dataSet.map((pizza) => {
-        let orderButton = createButton(`order-button:${pizza.id}`, "Order");
+        let amountInput = createInput(`amount-input:${pizza.id}`, "amount");
+        let orderButton = createOrderButton(`order-button:${pizza.id}`, "Order");
+
         let pizzaInput = `<div id="${pizza.id}" class="filtered-pizza-items">${pizza.name}<br>${pizza.price}<br>${orderButton}<br>${amountInput}</div>`;
         listItem += pizzaInput;
     });
@@ -203,12 +192,13 @@ const filterPizza = async function (pizzaApiData, allergenApiData) {
         const filteredPizzas = pizzas.filter(pizza => {
             return selectedAllergens.every(allergen => !pizza.allergens.includes(allergen));
         });
-        console.log("filtered pizzas: " + JSON.stringify(filteredPizzas));
+        /* console.log("filtered pizzas: " + JSON.stringify(filteredPizzas)); */
 
         document.querySelector('#default-pizza-list').remove();
+        //innerhtml pizza-list
         rootElement.insertAdjacentHTML("afterend", displayFilteredPizza(filteredPizzas));
+        orderPizza();
     });
-
 }
 
 function submitOrder() {
@@ -224,17 +214,33 @@ function submitOrder() {
     })
 }
 
-//TODO create an array to store ordered pizza ID and amount
 //TODO modify orderButton event listener to update pizza ID and pizza amount in orderObject
 async function orderPizza() {
-    const orderButton = document.getElementsByTagName("li");
-    orderButton.addEventListener('click', (event) => {
-        console.log("file: script.js:235 ~ orderButton.addEventListener ~ event:", event);
+    const orderInput = document.querySelectorAll(".order-button");
+    const amountInputValue = document.querySelectorAll(".input");
+    /* const filteredPizzaquery = document.querySelector("#filtered-pizza-list");
+    filteredPizzaquery.innerHTML = ""; */
 
-    });
+
+    orderInput.forEach(orderB => {
+        orderB.addEventListener('click', (event) => {
+            console.log(event.target.id);
+            const amount = parseInt(document.getElementById(`amount-input:${event.target.id.slice(event.target.id.length - 1)}`).value);
+            const newOrderID = parseInt(event.target.id.slice(event.target.id.length - 1))
+            console.log(amount);
+
+            let newOrder = { "id": newOrderID, "amount": amount }
+            
+            console.log(newOrder);
+
+            orderObject.pizzas.push(newOrder);
+
+            console.log(orderObject);
+        })
+    })
 }
 
-// Calling element functions to post them on site
+// Calling functions to post them on site
 async function createForm() {
 
     rootElement.insertAdjacentHTML("beforeend", createTitle("title", "Pizza order App"));
@@ -242,17 +248,15 @@ async function createForm() {
     allergenOptions();
     rootElement.insertAdjacentHTML("afterend", await defaultDisplayPizza());
     rootElement.insertAdjacentHTML("beforeend", createButton("filter-button", "Filter"));
+    await orderPizza();
     submitOrder();
-    // orderPizza();
 
 }
 
 //Loading functions on site
 const loadEvent = () => {
     createForm();
-    //submitOrder();
     filterPizza();
-    // orderPizza();
 };
 
 window.addEventListener("load", loadEvent);
