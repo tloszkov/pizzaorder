@@ -4,44 +4,44 @@ async function readApi() {
     const pizzaApiData = await apiData.json();
     return pizzaApiData;
 }
+
+// Reading allergens form API
 async function readAllergen() {
     const apiData = await fetch(`http://127.0.0.1:9002/api/allergen`);
     const allergenApiData = await apiData.json();
     return allergenApiData;
 }
 
+//Creating RootElement
 const rootElement = document.getElementById("root");
 
+
+
+//Sample order object
 const orderObject = {
-    id: 1,
-    pizzas: [
-        { id: 1, amount: 2 }
+    "id": 1,
+    "pizzas": [
+        { "id": 1, "amount": 2 }
     ],
-    date: {
-        year: 2022,
-        month: 6,
-        day: 7,
-        hour: 18,
-        minute: 47
-    },
-    customer: {
-        name: "John Doe",
-        email: "jd@example.com",
-        address: {
-            city: "Palermo",
-            street: "Via Appia 6"
+    "customer": {
+        "name": "John Doe",
+        "email": "jd@example.com",
+        "address": {
+            "city": "Palermo",
+            "street": "Via Appia 6"
         }
     }
 }
 
-customFetch("http://127.0.0.1:9002/api/order","POST",orderObject)
+/* customFetch("http://127.0.0.1:9002/api/order","POST",orderObject) */
 
+//Custom fetch() function
 function customFetch(url, type, data) {
     if (type === "GET") {
         fetch(url, {
             method: type,
             headers: {
-                "Content type": "application/json",
+                "Content-type": "application/json",
             }
         })
             .then((res) => {
@@ -50,9 +50,8 @@ function customFetch(url, type, data) {
                 } else {
                     console.log("HTTP request FAILED");
                 }
-                return res
+                return res.json()
             })
-            .then((res) => res.json())
             .then((data) => console.log(data))
             .catch((error) => console.log(error))
     }
@@ -60,7 +59,7 @@ function customFetch(url, type, data) {
         fetch(url, {
             method: type,
             headers: {
-                "Content type": "application/json",
+                "Content-type": "application/json",
             },
             body: JSON.stringify({ data })
         })
@@ -70,17 +69,16 @@ function customFetch(url, type, data) {
                 } else {
                     console.log("HTTP request FAILED");
                 }
-                return res
+                return res.json()
             })
-            .then((res) => res.json())
-            .then((data) => console.log(data))
+                /* .then((data) => data.status === "OK") */
             .catch((error) => console.log(error))
     }
     if (type === "DELETE") {
         fetch(url, {
             method: type,
             headers: {
-                "Content type": "application/json",
+                "Content-type": "application/json",
             }
         })
             .then((res) => {
@@ -96,24 +94,7 @@ function customFetch(url, type, data) {
 
 /* let selectedAllergens = []; */
 
-//Pizza object sample for POST (Order)
-let packageSample = {
-    "id": 7,
-    "name": "Quatro formaggi",
-    "ingredients": [
-        "Mozarella",
-        "Gorgonzola",
-        "Parmesan",
-        "Emmental"
-    ],
-    "price": 3200,
-    "allergens": [
-        1,
-        3,
-        9
-    ]
-}
-
+//Creating elements
 function createHeader(id, text) {
     return `<header id="${id}">${text}</header>`;
 }
@@ -130,6 +111,8 @@ function createInput(id, input) {
     return `<input id="${id}" class="input" type="text" placeholder="${input}"></input><br>`;
 }
 
+
+// Creating and posting allergen checkboxes to site
 async function allergenOptions() {
     const allergen = await readAllergen();
     const checkboxElement = document.createElement("div");
@@ -150,37 +133,42 @@ async function allergenOptions() {
     rootElement.appendChild(checkboxElement);
 }
 
+// Default siplay of all the pizzas
 async function defaultDisplayPizza() {
-    const pizzas = await readApi()
+    const pizzas = await readApi();
     let listItem = "";
-    let orderButton = createButton("order-button", "Order")
-    let amountInput = createInput("amount-input", "amount")
+    let orderButton = createButton("order-button", "Order");
+    let amountInput = createInput("amount-input", "Amount")
+
 
     pizzas.map((pizza) => {
         let pizzaInput = `<li id="${pizza.id}">${pizza.name} - ${pizza.price} ${orderButton} ${amountInput}</li>`;
-        listItem += pizzaInput
+        listItem += pizzaInput;
     });
 
     return `<div id="default-pizza-list"><ul id="pizza-object">
     ${listItem}
-    </ul></div>`
+    </ul></div>`;
 }
 
+// Display of filteres list pizzas
 function displayFilteredPizza(dataSet) {
     let listItem = "";
+    let orderButton = createButton("order-button", "Order");
+    let amountInput = createInput("amount-input", "amount");
 
     dataSet.map((pizza) => {
-        let pizzaInput = `<li id="${pizza.id}">${pizza.name} - ${pizza.price}</li>`;
-        listItem += pizzaInput
+        let pizzaInput = `<li id="${pizza.id}">${pizza.name} - ${pizza.price} ${orderButton} ${amountInput}</li>`;
+        listItem += pizzaInput;
     });
 
     return `<div id="filtered-pizzalist"><ul id="pizza-object">
     ${listItem}
-    </ul></div>`
+    </ul></div>`;
 }
 
 
-//TODO filter pizzas by allergens
+//Filter Pizzas function and EvenetListener
 const filterPizza = async function (pizzaApiData, allergenApiData) {
 
     const pizzas = await readApi();
@@ -206,6 +194,30 @@ const filterPizza = async function (pizzaApiData, allergenApiData) {
 
 }
 
+function submitOrder() {
+    const submitButton = document.querySelector("#submit-order");
+
+    submitButton.addEventListener('click', (event) => {
+        //console.log(event.target);
+        // possible redirect functionality to see order page after clicking submit
+
+
+        customFetch("http://127.0.0.1:9002/api/order", "POST", orderObject);
+
+    })
+}
+
+//TODO create an array to store ordered pizza ID and amount
+//TODO modify orderButton event listener to update pizza ID and pizza amount in orderObject
+async function orderPizza() {
+    const orderButton = document.getElementsByTagName("li");
+    orderButton.addEventListener('click', (event) => {
+        console.log("file: script.js:235 ~ orderButton.addEventListener ~ event:", event);
+
+    });
+}
+
+// Calling element functions to post them on site
 async function createForm() {
 
     rootElement.insertAdjacentHTML("beforeend", createTitle("title", "Pizza order App"));
@@ -213,12 +225,17 @@ async function createForm() {
     allergenOptions();
     rootElement.insertAdjacentHTML("afterend", await defaultDisplayPizza());
     rootElement.insertAdjacentHTML("beforeend", createButton("filter-button", "Filter"));
+    submitOrder();
+    // orderPizza();
 
 }
 
-const loadEvent = async () => {
+//Loading functions on site
+const loadEvent = () => {
     createForm();
+    //submitOrder();
     filterPizza();
+    // orderPizza();
 };
 
 window.addEventListener("load", loadEvent);
