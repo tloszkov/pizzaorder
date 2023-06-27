@@ -9,6 +9,8 @@ const app = express();
 
 const port = 9002;
 
+const orderedPizzas = [];
+
 app.use(express.json());
 
 const loadPizza = async function () {
@@ -30,13 +32,28 @@ const loadAllergen = async function () {
 }
 loadAllergen();
 
-
+// Display pizzas
 app.get('/api/pizza', (req, res) => {
     res.json(pizza.pizzas);
 });
 
+// Display allergens
 app.get('/api/allergen', (req, res) => {
     res.json(allergen.allergens);
+});
+
+// Send new order
+app.post('/api/order', (req, res) => {
+    const pizzaData = req.body;
+
+    orderedPizzas.push(pizzaData);
+    res.send(pizzaData);
+});
+
+// Display orders
+app.get('/api/order', (req, res) => {
+    
+    res.send(orderedPizzas);
 });
 
 app.listen(port, _ => console.log(`http://127.0.0.1:${port}`));

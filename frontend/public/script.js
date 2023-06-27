@@ -12,6 +12,88 @@ async function readAllergen() {
 
 const rootElement = document.getElementById("root");
 
+const orderObject = {
+    id: 1,
+    pizzas: [
+        { id: 1, amount: 2 }
+    ],
+    date: {
+        year: 2022,
+        month: 6,
+        day: 7,
+        hour: 18,
+        minute: 47
+    },
+    customer: {
+        name: "John Doe",
+        email: "jd@example.com",
+        address: {
+            city: "Palermo",
+            street: "Via Appia 6"
+        }
+    }
+}
+
+customFetch("http://127.0.0.1:9002/api/order","POST",orderObject)
+
+function customFetch(url, type, data) {
+    if (type === "GET") {
+        fetch(url, {
+            method: type,
+            headers: {
+                "Content type": "application/json",
+            }
+        })
+            .then((res) => {
+                if (res.ok) {
+                    console.log("HTTP request SUCCESSFUL");
+                } else {
+                    console.log("HTTP request FAILED");
+                }
+                return res
+            })
+            .then((res) => res.json())
+            .then((data) => console.log(data))
+            .catch((error) => console.log(error))
+    }
+    if (type === "POST" || type === "PUT") {
+        fetch(url, {
+            method: type,
+            headers: {
+                "Content type": "application/json",
+            },
+            body: JSON.stringify({ data })
+        })
+            .then((res) => {
+                if (res.ok) {
+                    console.log("HTTP request SUCCESSFUL");
+                } else {
+                    console.log("HTTP request FAILED");
+                }
+                return res
+            })
+            .then((res) => res.json())
+            .then((data) => console.log(data))
+            .catch((error) => console.log(error))
+    }
+    if (type === "DELETE") {
+        fetch(url, {
+            method: type,
+            headers: {
+                "Content type": "application/json",
+            }
+        })
+            .then((res) => {
+                if (res.ok) {
+                    console.log("HTTP request SUCCESSFUL");
+                } else {
+                    console.log("HTTP request FAILED");
+                }
+            })
+            .catch((error) => console.log(error))
+    }
+}
+
 /* let selectedAllergens = []; */
 
 //Pizza object sample for POST (Order)
@@ -44,6 +126,10 @@ function createButton(id, text) {
     return `<button id="${id}">${text}</button>`;
 }
 
+function createInput(id, input) {
+    return `<input id="${id}" class="input" type="text" placeholder="${input}"></input><br>`;
+}
+
 async function allergenOptions() {
     const allergen = await readAllergen();
     const checkboxElement = document.createElement("div");
@@ -65,17 +151,32 @@ async function allergenOptions() {
 }
 
 async function defaultDisplayPizza() {
-    const pizza = await readApi()
+    const pizzas = await readApi()
+    let listItem = "";
+    let orderButton = createButton("order-button", "Order")
+    let amountInput = createInput("amount-input", "amount")
+
+    pizzas.map((pizza) => {
+        let pizzaInput = `<li id="${pizza.id}">${pizza.name} - ${pizza.price} ${orderButton} ${amountInput}</li>`;
+        listItem += pizzaInput
+    });
+
+    return `<div id="default-pizza-list"><ul id="pizza-object">
+    ${listItem}
+    </ul></div>`
+}
+
+function displayFilteredPizza(dataSet) {
     let listItem = "";
 
-    pizza.map((pizza) => {
+    dataSet.map((pizza) => {
         let pizzaInput = `<li id="${pizza.id}">${pizza.name} - ${pizza.price}</li>`;
         listItem += pizzaInput
     });
 
-    return `<ul id="pizza-object">
+    return `<div id="filtered-pizzalist"><ul id="pizza-object">
     ${listItem}
-    </ul>`
+    </ul></div>`
 }
 
 
@@ -84,72 +185,39 @@ const filterPizza = async function (pizzaApiData, allergenApiData) {
 
     const pizzas = await readApi();
     const allergens = await readAllergen();
-    const submit = document.getElementById('submit-button');
+    const filter = document.getElementById('filter-button');
 
-    //selectedAllergens is either an array or an object that contains strings of allergens
-    //    these allergens have to be found by their IDs
-
-    submit.addEventListener('click', (event) => {
+    filter.addEventListener('click', (event) => {
         event.preventDefault();
 
         let checkedAllergens = document.querySelectorAll('input[type="checkbox"]:checked');
-        const selectedAllergens = [...checkedAllergens].map(element => element.value);
+        const selectedAllergens = [...checkedAllergens].map(element => parseInt(element.value));
 
-      /*   function matchingPizzas() {
-            const pizzaAllergens = pizzas.map(pizza => pizza.allergens.map(allerg => console.log(allerg)))
-            console.log(pizzaAllergens);
-            return selectedAllergens.every(item => {
-                pizzaAllergens.includes(item)
-            })
-        }
-
-        console.log(matchingPizzas()); */
+        console.log(selectedAllergens);
 
         const filteredPizzas = pizzas.filter(pizza => {
-            return pizza.allergens.some(allergen => selectedAllergens.includes(allergen));
+            return selectedAllergens.every(allergen => !pizza.allergens.includes(allergen));
         });
-        console.log("filtered pizzas: " + filteredPizzas);
+        console.log("filtered pizzas: " + JSON.stringify(filteredPizzas));
 
-        // const filteredPizzas = pizzas.filter(element => !selectedAllergens.includes(element.allergens));
-        // console.log("file: script.js:107 ~ submit.addEventListener ~ filteredPizzas:", filteredPizzas);
-
-
+        document.querySelector('#default-pizza-list').remove();
+        rootElement.insertAdjacentHTML("afterend", displayFilteredPizza(filteredPizzas));
     });
 
-
-
-
-    // selectedAllergens = returns ID/s
-
-
-
-    // pizzaApiData.filter(element => element.allergens.includes(selectedAllergens))???
-
 }
-
-/* const displayFilteredPizza = function () {
-
-    const pizzaElement = document.createElement('pizza');
-
-
-} */
 
 async function createForm() {
 
     rootElement.insertAdjacentHTML("beforeend", createTitle("title", "Pizza order App"));
-    rootElement.insertAdjacentHTML("beforeend", createButton("order-button", "Order Pizza"));
+    rootElement.insertAdjacentHTML("beforeend", createButton("submit-order", "Submit Order"));
     allergenOptions();
-    rootElement.insertAdjacentHTML("beforeend", createButton("submit-button", "Submit"));
-    /* if (selectedAllergens) {
-
-    } */
     rootElement.insertAdjacentHTML("afterend", await defaultDisplayPizza());
+    rootElement.insertAdjacentHTML("beforeend", createButton("filter-button", "Filter"));
 
 }
 
 const loadEvent = async () => {
     createForm();
-    /* displayFilteredPizza(); */
     filterPizza();
 };
 
