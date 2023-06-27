@@ -45,14 +45,24 @@ app.get('/api/allergen', (req, res) => {
 // Send new order
 app.post('/api/order', (req, res) => {
     const pizzaData = req.body;
+    console.log(pizzaData);
+
+    // köztes lépésként dátum objektum beszurása/módosítása lehetséges
+    /* {status: "NOT OK"}
+    {status: "OK", date: "2023-06-27"} */
 
     orderedPizzas.push(pizzaData);
+    pizzaData.date = new Date().toISOString().slice(0, 10);
     res.send(pizzaData);
+    orderedPizzas.slice(0);
 });
 
 // Display orders
 app.get('/api/order', (req, res) => {
-    
+    const pizzaData = req.body;
+    console.log(pizzaData);
+
+    /* res.send(pizzaData); */
     res.send(orderedPizzas);
 });
 
