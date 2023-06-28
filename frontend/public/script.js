@@ -1,3 +1,5 @@
+let orderID = 0;
+
 // Reading pizzas from API
 async function readApi() {
     const apiData = await fetch(`http://127.0.0.1:9002/api/pizza`);
@@ -17,7 +19,7 @@ const rootElement = document.getElementById("root");
 
 //Sample order object
 const orderObject = {
-    "id": 1,
+    "id": orderID,
     "pizzas": [
 
     ],
@@ -193,7 +195,6 @@ const filterPizza = async function () {
             });
 
             document.querySelector('#default-pizza-list').innerHTML = "";
-            //document.querySelector('#default-pizza-list').remove();
 
             rootElement.insertAdjacentHTML("afterend", displayFilteredPizza(filteredPizzas));
             orderPizza();
@@ -212,10 +213,10 @@ function submitOrder() {
     submitButton.addEventListener('click', (event) => {
         //console.log(event.target);
         // possible redirect functionality to see order page after clicking submit
-
+        orderObject.id = orderID++;
         customFetch("http://127.0.0.1:9002/api/order", "POST", orderObject);
+        window.open("http://127.0.0.1:9002/api/order", "_blank");
         orderObject.pizzas.splice(0);
-        //location.reload();
     })
 }
 
