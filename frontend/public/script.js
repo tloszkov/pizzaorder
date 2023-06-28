@@ -209,15 +209,17 @@ const filterPizza = async function () {
 
 function submitOrder() {
     const submitButton = document.querySelector("#submit-order");
-
-    submitButton.addEventListener('click', (event) => {
-        //console.log(event.target);
-        // possible redirect functionality to see order page after clicking submit
-        orderObject.id = orderID++;
-        customFetch("http://127.0.0.1:9002/api/order", "POST", orderObject);
-        window.open("http://127.0.0.1:9002/api/order", "_blank");
-        orderObject.pizzas.splice(0);
-    })
+    submitButton.addEventListener('click', () => {
+        if (orderObject.pizzas.length > 0) {
+            orderObject.customer.name = '';
+            orderObject.customer.email = '';
+            orderObject.customer.address.city = '';
+            orderObject.customer.address.street = '';
+            console.log("file: script.js:218 ~ submitButton.addEventListener ~ orderObject:", orderObject)
+            
+            validationForm();
+        }
+    });
 }
 
 //TODO modify orderButton event listener to update pizza ID and pizza amount in orderObject
@@ -241,6 +243,109 @@ async function orderPizza() {
     })
 }
 
+function validationForm (){
+
+    const defaultPizzaList = document.querySelector("#default-pizza-list");
+    const filteredPizzaList = document.querySelector("#filtered-pizza-list");
+    rootElement.innerHTML='';
+    defaultPizzaList.innerHTML = '';
+
+    const divForm = document.createElement('div');
+    divForm.id = 'div-validation';
+
+    const inputNameLabel = document.createElement('label');
+    inputNameLabel.textContent = "Name :";
+    const inputName = document.createElement('input');
+    inputName.type = "text";
+    inputName.placeholder = "Please enter your name."
+    
+    const inputEmailLabel = document.createElement('label');
+    inputEmailLabel.textContent = "Email :";
+    const inputEmail = document.createElement('input');
+    inputEmail.type = "text";
+    inputEmail.placeholder = "Please enter your email."
+    
+    const inputCityLabel = document.createElement('label');
+    inputCityLabel.textContent = "City :";
+    const inputCity = document.createElement('input');
+    inputCity.type = "text";
+    inputCity.placeholder = "Please enter your City."
+    
+    const inputStreetLabel = document.createElement('label');
+    inputStreetLabel.textContent = "Street :";
+    const inputStreet = document.createElement('input');
+    inputStreet.type = "text";
+    inputStreet.placeholder = "Please enter your street."
+
+    const breakeLine = document.createElement('br');
+
+    const sendButton = document.createElement('button');
+    sendButton.textContent = "Send";
+    sendButton.type = "submit";
+    sendButton.id = "send"
+    
+    const backButton = document.createElement('button');
+    backButton.textContent = "Back";
+    backButton.id = "back"
+
+    divForm.appendChild(inputNameLabel);
+    divForm.appendChild(inputName);
+    divForm.appendChild(inputEmailLabel);
+    divForm.appendChild(inputEmail);
+    divForm.appendChild(breakeLine);
+    divForm.appendChild(inputCityLabel);
+    divForm.appendChild(inputCity);
+    divForm.appendChild(breakeLine);
+    divForm.appendChild(inputStreetLabel);
+    divForm.appendChild(inputStreet);
+    divForm.appendChild(breakeLine);
+    divForm.appendChild(sendButton);
+    divForm.appendChild(backButton);
+    
+    const errorMessage = document.createElement('div');
+    errorMessage.id = 'errorMessage';
+    errorMessage.innerHTML='Please fill the inputfields!';
+    errorMessage.style.visibility='hidden';
+    divForm.appendChild(errorMessage);
+
+    sendButton.addEventListener('click',()=> {
+        if(inputName.value ==='' || inputEmail.value ==='' || inputCity.value ==='' || inputStreet.value ===''){
+           errorMessage.style.visibility='visible' 
+        }else{
+            errorMessage.style.visibility='hidden';
+            orderObject.customer.name = inputName.value;
+            orderObject.customer.email = inputEmail.value;
+            orderObject.customer.address.city = inputCity.value;
+            orderObject.customer.address.street = inputStreet.value;
+            
+            orderObject.id = orderID++;
+            customFetch("http://127.0.0.1:9002/api/order", "POST", orderObject);
+            window.open("http://127.0.0.1:9002/api/order", "_blank");
+            window.open("http://127.0.0.1:9002/api/validation", "_blank");
+            orderObject.pizzas.splice(0);
+            
+        }
+    });
+    
+    backButton.addEventListener('click',()=>{
+        createPage();
+        divForm.remove();
+        
+        orderObject.pizzas.splice(0);
+        
+        
+
+    })
+    document.body.appendChild(divForm);
+    
+}
+
+async function createPage() {
+    // document.body.innerHTML ='';
+    createForm();
+    filterPizza();
+}
+
 // Calling functions to post them on site
 async function createForm() {
 
@@ -256,13 +361,9 @@ async function createForm() {
 
 //Loading functions on site
 const loadEvent = () => {
-    createForm();
-    /*     const pizzaList = document.createElement('div');
-        pizzaList.id = "pizzaList";
-        document.body.appendChild(pizzaList);
-        document.body.appendChild(defaultPizzaList);
-        document.body.appendChild(filteredPizzaList); */
-    filterPizza();
+   
+    createPage();
+    
 };
 
 window.addEventListener("load", loadEvent);
