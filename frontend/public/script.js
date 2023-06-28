@@ -69,7 +69,6 @@ function customFetch(url, type, data) {
                 }
                 return res.json()
             })
-            /* .then((data) => data.status === "OK") */
             .catch((error) => console.log(error))
     }
     if (type === "DELETE") {
@@ -112,7 +111,7 @@ function createInput(id, input) {
 }
 
 // Creating new div element for pizza lists
-const defaultPizzaList = document.getElementById("default-pizza-list")
+const defaultPizzaList = document.getElementById("default-pizza-list");
 const filteredPizzaList = document.getElementById("filtered-pizza-list");
 
 // Creating and posting allergen checkboxes to site
@@ -132,7 +131,6 @@ async function allergenOptions() {
         checkboxElement.innerHTML += option;
 
     });
-
     rootElement.appendChild(checkboxElement);
 }
 
@@ -147,7 +145,6 @@ async function defaultDisplayPizza() {
 
         let pizzaInput = `<div id="${pizza.id}" class="default-pizza-items">${pizza.name}<br>${pizza.price}<br>${orderButton}<br>${amountInput}</div>`;
         listItem += pizzaInput;
-
     });
 
     return `<div id="default-pizza-list">
@@ -187,12 +184,11 @@ const filterPizza = async function () {
 
         console.log(selectedAllergens);
 
-        // TODO if selectedAllergens.length != 0
         if (selectedAllergens.length != 0) {
 
             const filteredPizzas = pizzas.filter(pizza => {
                 return selectedAllergens.every(allergen => !pizza.allergens.includes(allergen));
-            });
+            })
 
             document.querySelector('#default-pizza-list').innerHTML = "";
 
@@ -204,7 +200,7 @@ const filterPizza = async function () {
             createForm();
             filterPizza();
         }
-    });
+    })
 }
 
 function submitOrder() {
@@ -217,10 +213,9 @@ function submitOrder() {
             orderObject.customer.address.street = '';
             validationForm();
         }
-    });
+    })
 }
 
-//TODO modify orderButton event listener to update pizza ID and pizza amount in orderObject
 async function orderPizza() {
     const orderInput = document.querySelectorAll(".order-button");
 
@@ -241,35 +236,33 @@ async function orderPizza() {
     })
 }
 
-async function pizzasName(){
+async function pizzasName() {
     const pizzas = await readApi();
     const pizzaIds = orderObject.pizzas.map(element => element.id);
-    console.log("file: script.js:247 ~ pizzasName ~ pizzaIds:", pizzaIds)
-    const pizzasData = pizzaIds.map(element=>{
-        pizzas.map(pizza =>{
-           if(pizza.id === element){ return pizza.id}
-        });
-    });
-    console.log("file: script.js:253 ~ pizzasData ~ pizzasData:", pizzasData[0])
-    
+    console.log("file: script.js:247 ~ pizzasName ~ pizzaIds:", pizzaIds);
+    const pizzasData = pizzaIds.map(element => {
+        pizzas.map(pizza => {
+            if (pizza.id === element) { return pizza.id };
+        })
+    })
+    console.log("file: script.js:253 ~ pizzasData ~ pizzasData:", pizzasData[0]);
 }
 
-function summerizeForm(){
+function summerizeForm() {
     const sumarryForm = document.createElement('div');
     sumarryForm.id = "sumerize-form";
     document.body.append(sumarryForm);
-    sumarryForm.innerHTML="<div>Summary:</div>"
+    sumarryForm.innerHTML = "<div>Summary:</div>"
     pizzasName();
-
 }
 
-function validationForm (){
+function validationForm() {
 
     // summerizeForm();
 
     const defaultPizzaList = document.querySelector("#default-pizza-list");
     const filteredPizzaList = document.querySelector("#filtered-pizza-list");
-    rootElement.innerHTML='';
+    rootElement.innerHTML = '';
     defaultPizzaList.innerHTML = '';
 
     const divForm = document.createElement('div');
@@ -280,35 +273,35 @@ function validationForm (){
     const inputName = document.createElement('input');
     inputName.type = "text";
     inputName.placeholder = "Please enter your name."
-    
+
     const inputEmailLabel = document.createElement('label');
     inputEmailLabel.textContent = "Email :";
     const inputEmail = document.createElement('input');
     inputEmail.type = "text";
-    inputEmail.placeholder = "Please enter your email."
-    
+    inputEmail.placeholder = "Please enter your email.";
+
     const inputCityLabel = document.createElement('label');
     inputCityLabel.textContent = "City :";
     const inputCity = document.createElement('input');
     inputCity.type = "text";
-    inputCity.placeholder = "Please enter your City."
-    
+    inputCity.placeholder = "Please enter your City.";
+
     const inputStreetLabel = document.createElement('label');
     inputStreetLabel.textContent = "Street :";
     const inputStreet = document.createElement('input');
     inputStreet.type = "text";
-    inputStreet.placeholder = "Please enter your street."
+    inputStreet.placeholder = "Please enter your street.";
 
     const breakeLine = document.createElement('br');
 
     const sendButton = document.createElement('button');
     sendButton.textContent = "Send";
     sendButton.type = "submit";
-    sendButton.id = "send"
-    
+    sendButton.id = "send";
+
     const backButton = document.createElement('button');
     backButton.textContent = "Back";
-    backButton.id = "back"
+    backButton.id = "back";
 
     divForm.appendChild(inputNameLabel);
     divForm.appendChild(inputName);
@@ -323,23 +316,23 @@ function validationForm (){
     divForm.appendChild(breakeLine);
     divForm.appendChild(sendButton);
     divForm.appendChild(backButton);
-    
+
     const errorMessage = document.createElement('div');
     errorMessage.id = 'errorMessage';
-    errorMessage.innerHTML='Please fill the inputfields!';
-    errorMessage.style.visibility='hidden';
+    errorMessage.innerHTML = 'Please fill the inputfields!';
+    errorMessage.style.visibility = 'hidden';
     divForm.appendChild(errorMessage);
 
-    sendButton.addEventListener('click',()=> {
-        if(inputName.value ==='' || inputEmail.value ==='' || inputCity.value ==='' || inputStreet.value ===''){
-           errorMessage.style.visibility='visible' 
-        }else{
-            errorMessage.style.visibility='hidden';
+    sendButton.addEventListener('click', () => {
+        if (inputName.value === '' || inputEmail.value === '' || inputCity.value === '' || inputStreet.value === '') {
+            errorMessage.style.visibility = 'visible';
+        } else {
+            errorMessage.style.visibility = 'hidden';
             orderObject.customer.name = inputName.value;
             orderObject.customer.email = inputEmail.value;
             orderObject.customer.address.city = inputCity.value;
             orderObject.customer.address.street = inputStreet.value;
-            
+
             orderObject.id = orderID++;
             customFetch("http://127.0.0.1:9002/api/order", "POST", orderObject);
             window.open("http://127.0.0.1:9002/api/order", "_blank");
@@ -349,17 +342,15 @@ function validationForm (){
             createPage();
             divForm.remove();
             orderObject.pizzas.splice(0);
-            
         }
     });
-    
-    backButton.addEventListener('click',()=>{
+
+    backButton.addEventListener('click', () => {
         createPage();
         divForm.remove();
         orderObject.pizzas.splice(0);
     });
     document.body.appendChild(divForm);
-    
 }
 
 async function createPage() {
@@ -378,16 +369,13 @@ async function createForm() {
     rootElement.insertAdjacentHTML("beforeend", createButton("filter-button", "Filter"));
     await orderPizza();
     submitOrder();
-
 }
 
 //Loading functions on site
 const loadEvent = () => {
-   
+
     createPage();
-    
+
 };
 
 window.addEventListener("load", loadEvent);
-
-
