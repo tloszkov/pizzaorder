@@ -215,8 +215,6 @@ function submitOrder() {
             orderObject.customer.email = '';
             orderObject.customer.address.city = '';
             orderObject.customer.address.street = '';
-            console.log("file: script.js:218 ~ submitButton.addEventListener ~ orderObject:", orderObject)
-            
             validationForm();
         }
     });
