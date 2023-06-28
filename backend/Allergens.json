@@ -51,6 +51,18 @@
     {
       "id": 13,
       "name": "yeast"
+    },
+    {
+      "id": 14,
+      "name": "cinnamon"
+    },
+    {
+      "id": 15,
+      "name": "nutmeg"
+    },
+    {
+      "id": 16,
+      "name": "cocoa"
     }
   ]
 }
