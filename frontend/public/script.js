@@ -241,7 +241,31 @@ async function orderPizza() {
     })
 }
 
+async function pizzasName(){
+    const pizzas = await readApi();
+    const pizzaIds = orderObject.pizzas.map(element => element.id);
+    console.log("file: script.js:247 ~ pizzasName ~ pizzaIds:", pizzaIds)
+    const pizzasData = pizzaIds.map(element=>{
+        pizzas.map(pizza =>{
+           if(pizza.id === element){ return pizza.id}
+        });
+    });
+    console.log("file: script.js:253 ~ pizzasData ~ pizzasData:", pizzasData[0])
+    
+}
+
+function summerizeForm(){
+    const sumarryForm = document.createElement('div');
+    sumarryForm.id = "sumerize-form";
+    document.body.append(sumarryForm);
+    sumarryForm.innerHTML="<div>Summary:</div>"
+    pizzasName();
+
+}
+
 function validationForm (){
+
+    // summerizeForm();
 
     const defaultPizzaList = document.querySelector("#default-pizza-list");
     const filteredPizzaList = document.querySelector("#filtered-pizza-list");
@@ -321,6 +345,10 @@ function validationForm (){
             window.open("http://127.0.0.1:9002/api/order", "_blank");
             window.open("http://127.0.0.1:9002/api/validation", "_blank");
             orderObject.pizzas.splice(0);
+
+            createPage();
+            divForm.remove();
+            orderObject.pizzas.splice(0);
             
         }
     });
@@ -328,12 +356,8 @@ function validationForm (){
     backButton.addEventListener('click',()=>{
         createPage();
         divForm.remove();
-        
         orderObject.pizzas.splice(0);
-        
-        
-
-    })
+    });
     document.body.appendChild(divForm);
     
 }
