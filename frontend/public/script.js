@@ -15,8 +15,6 @@ async function readAllergen() {
 //Creating RootElement
 const rootElement = document.getElementById("root");
 
-
-
 //Sample order object
 const orderObject = {
     "id": 1,
@@ -32,8 +30,6 @@ const orderObject = {
         }
     }
 }
-
-/* customFetch("http://127.0.0.1:9002/api/order","POST",orderObject) */
 
 //Custom fetch() function
 function customFetch(url, type, data) {
@@ -92,8 +88,6 @@ function customFetch(url, type, data) {
     }
 }
 
-/* let selectedAllergens = []; */
-
 //Creating elements
 function createHeader(id, text) {
     return `<header id="${id}">${text}</header>`;
@@ -115,6 +109,9 @@ function createInput(id, input) {
     return `<input id="${id}" class="input" type="text" placeholder="${input}"></input><br>`;
 }
 
+// Creating new div element for pizza lists
+const defaultPizzaList = document.getElementById("default-pizza-list")
+const filteredPizzaList = document.getElementById("filtered-pizza-list");
 
 // Creating and posting allergen checkboxes to site
 async function allergenOptions() {
@@ -137,7 +134,7 @@ async function allergenOptions() {
     rootElement.appendChild(checkboxElement);
 }
 
-// Default siplay of all the pizzas
+// Default display of all the pizzas
 async function defaultDisplayPizza() {
     const pizzas = await readApi();
     let listItem = "";
@@ -175,10 +172,9 @@ function displayFilteredPizza(dataSet) {
 
 
 //Filter Pizzas function and EvenetListener
-const filterPizza = async function (pizzaApiData, allergenApiData) {
+const filterPizza = async function () {
 
     const pizzas = await readApi();
-    const allergens = await readAllergen();
     const filter = document.getElementById('filter-button');
 
     filter.addEventListener('click', (event) => {
@@ -189,15 +185,24 @@ const filterPizza = async function (pizzaApiData, allergenApiData) {
 
         console.log(selectedAllergens);
 
-        const filteredPizzas = pizzas.filter(pizza => {
-            return selectedAllergens.every(allergen => !pizza.allergens.includes(allergen));
-        });
-        /* console.log("filtered pizzas: " + JSON.stringify(filteredPizzas)); */
+        // TODO if selectedAllergens.length != 0
+        if (selectedAllergens.length != 0) {
 
-        document.querySelector('#default-pizza-list').remove();
-        //innerhtml pizza-list
-        rootElement.insertAdjacentHTML("afterend", displayFilteredPizza(filteredPizzas));
-        orderPizza();
+            const filteredPizzas = pizzas.filter(pizza => {
+                return selectedAllergens.every(allergen => !pizza.allergens.includes(allergen));
+            });
+
+            document.querySelector('#default-pizza-list').innerHTML = "";
+            //document.querySelector('#default-pizza-list').remove();
+
+            rootElement.insertAdjacentHTML("afterend", displayFilteredPizza(filteredPizzas));
+            orderPizza();
+        } else {
+            rootElement.innerHTML = '';
+            document.querySelector('#filtered-pizza-list').remove();
+            createForm();
+            filterPizza();
+        }
     });
 }
 
@@ -208,30 +213,25 @@ function submitOrder() {
         //console.log(event.target);
         // possible redirect functionality to see order page after clicking submit
 
-
         customFetch("http://127.0.0.1:9002/api/order", "POST", orderObject);
-
+        orderObject.pizzas.splice(0);
+        //location.reload();
     })
 }
 
 //TODO modify orderButton event listener to update pizza ID and pizza amount in orderObject
 async function orderPizza() {
     const orderInput = document.querySelectorAll(".order-button");
-    const amountInputValue = document.querySelectorAll(".input");
-    /* const filteredPizzaquery = document.querySelector("#filtered-pizza-list");
-    filteredPizzaquery.innerHTML = ""; */
-
 
     orderInput.forEach(orderB => {
         orderB.addEventListener('click', (event) => {
-            console.log(event.target.id);
-            const amount = parseInt(document.getElementById(`amount-input:${event.target.id.slice(event.target.id.length - 1)}`).value);
-            const newOrderID = parseInt(event.target.id.slice(event.target.id.length - 1))
-            console.log(amount);
 
-            let newOrder = { "id": newOrderID, "amount": amount }
-            
-            console.log(newOrder);
+            let indexID = event.target.id.slice(event.target.id.indexOf(":") + 1);
+
+            const amount = parseInt(document.getElementById(`amount-input:${indexID}`).value);
+            const newOrderID = parseInt(indexID);
+
+            let newOrder = { "id": newOrderID, "amount": amount };
 
             orderObject.pizzas.push(newOrder);
 
@@ -256,6 +256,11 @@ async function createForm() {
 //Loading functions on site
 const loadEvent = () => {
     createForm();
+    /*     const pizzaList = document.createElement('div');
+        pizzaList.id = "pizzaList";
+        document.body.appendChild(pizzaList);
+        document.body.appendChild(defaultPizzaList);
+        document.body.appendChild(filteredPizzaList); */
     filterPizza();
 };
 
